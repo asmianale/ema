@@ -38,7 +38,7 @@ RSI_OVERSOLD = 45       # Titik beli saat tren naik (Diubah jadi 45 agar lebih s
 RSI_OVERBOUGHT = 55     # Titik jual saat tren turun (Diubah jadi 55 agar lebih sensitif)
 
 # ==========================================
-# 3. INISIALISASI KONEKSI (Binance Testnet)
+# 3. INISIALISASI KONEKSI (Binance Demo Trading)
 # ==========================================
 try:
     exchange = ccxt.binance({
@@ -47,10 +47,13 @@ try:
         'enableRateLimit': True,
         'options': {'defaultType': 'future'}
     })
-    exchange.set_sandbox_mode(True) # MENGAKTIFKAN TESTNET
+    
+    # MENGAKTIFKAN LINGKUNGAN DEMO TRADING BARU BINANCE
+    exchange.enable_demo_trading(True) 
     exchange.load_markets() # Verifikasi koneksi awal
+    
 except Exception as e:
-    print(f"❌ ERROR: Gagal terhubung ke Binance Testnet. Cek API Key. Detail: {e}")
+    print(f"❌ ERROR: Gagal terhubung ke Binance Demo. Cek API Key. Detail: {e}")
     exit()
 
 # ==========================================
@@ -141,7 +144,7 @@ def main():
     print("🤖 BOT KUANTITATIF (LITE VERSION) JALAN")
     print(f"Pair: {SYMBOL} | Margin: ${MARGIN_USDT} | Lev: {LEVERAGE}x")
     print("=" * 50)
-    send_telegram(f"🤖 Bot Binance Testnet aktif memantau <b>{SYMBOL}</b>.")
+    send_telegram(f"🤖 Bot Binance Demo Trading aktif memantau <b>{SYMBOL}</b>.")
 
     in_position = False
 
