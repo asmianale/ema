@@ -26,7 +26,7 @@ if not API_KEY or not SECRET_KEY or not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_
 # 2. PENGATURAN STRATEGI (Parameter Kuantitatif)
 # ==========================================
 SYMBOL = 'BTC/USDT'     # Koin yang akan ditradingkan
-TIMEFRAME = '15m'       # Timeframe analisis (15 Menit)
+TIMEFRAME = '5m'        # Timeframe analisis (5 Menit - Lebih Agresif)
 LEVERAGE = 20           # Daya ungkit / Leverage
 MARGIN_USDT = 10        # Risiko Modal per transaksi ($10)
 RR_RATIO = 2            # Risk to Reward (TP 2%, SL 1%)
@@ -34,8 +34,8 @@ RR_RATIO = 2            # Risk to Reward (TP 2%, SL 1%)
 EMA_FAST = 13
 EMA_SLOW = 21
 RSI_LENGTH = 14
-RSI_OVERSOLD = 35       # Titik beli saat tren naik
-RSI_OVERBOUGHT = 65     # Titik jual saat tren turun
+RSI_OVERSOLD = 45       # Titik beli saat tren naik (Diubah jadi 45 agar lebih sensitif)
+RSI_OVERBOUGHT = 55     # Titik jual saat tren turun (Diubah jadi 55 agar lebih sensitif)
 
 # ==========================================
 # 3. INISIALISASI KONEKSI (Binance Testnet)
@@ -165,13 +165,13 @@ def main():
                     print(f"[{datetime.now().strftime('%H:%M:%S')}] {SYMBOL} | Harga: {c_price:.2f} | EMA(13,21): {ema13:.0f}/{ema21:.0f} | RSI: {rsi:.1f}", end='\r')
 
                     # -- LOGIKA ALGORITMA --
-                    # Sinyal BUY: Trend Naik (EMA13 > EMA21) & Koreksi Oversold (RSI < 35)
+                    # Sinyal BUY: Trend Naik (EMA13 > EMA21) & Koreksi Oversold
                     if ema13 > ema21 and rsi < RSI_OVERSOLD:
                         print(f"\n[{datetime.now().strftime('%H:%M:%S')}] 🚀 Sinyal LONG valid! RSI: {rsi:.1f}")
                         if execute_trade('buy', c_price):
                             in_position = True
                             
-                    # Sinyal SELL: Trend Turun (EMA13 < EMA21) & Rebound Overbought (RSI > 65)
+                    # Sinyal SELL: Trend Turun (EMA13 < EMA21) & Rebound Overbought
                     elif ema13 < ema21 and rsi > RSI_OVERBOUGHT:
                         print(f"\n[{datetime.now().strftime('%H:%M:%S')}] ☄️ Sinyal SHORT valid! RSI: {rsi:.1f}")
                         if execute_trade('sell', c_price):
@@ -192,7 +192,7 @@ def main():
                     unrealized_pnl = float(active_pos[0]['info']['unRealizedProfit'])
                     print(f"[{datetime.now().strftime('%H:%M:%S')}] Menunggu TP/SL tersentuh... | Floating PnL: ${unrealized_pnl:.2f}    ", end='\r')
 
-            time.sleep(15) # Delay 15 detik sebelum pengecekan berikutnya
+            time.sleep(60) # Delay 60 detik agar aman dari blokir IP Binance
 
         except KeyboardInterrupt:
             print("\nBot dihentikan oleh pengguna.")
